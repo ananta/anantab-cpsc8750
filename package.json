@@ -1,0 +1,15 @@
+{
+  "name": "anantab-cpsc8750",
+  "version": "1.0.0",
+  "description": "a basic server application built for cps8750",
+  "main": "src/server.js",
+  "repository": "https://github.com/ananta/anantab-cpsc8750",
+  "author": "ananta <12180395+ananta@users.noreply.github.com>",
+  "license": "MIT",
+  "scripts": {
+    "start": "node ./src/server.js"
+  },
+  "dependencies": {
+    "express": "^4.18.1"
+  }
+}
