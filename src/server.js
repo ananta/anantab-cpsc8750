@@ -1,8 +1,11 @@
+const fetch = require("node-fetch");
 /* const { encode } = require("html-entities"); */
 const cookieParser = require("cookie-parser");
 
 // use the express library
 const express = require("express");
+
+const { shuffleArray } = require('../utils/shuffle');
 
 // create a new server application
 const app = express();
@@ -56,6 +59,37 @@ app.get("/", (req, res) => {
   /*     </body> */
   /*   </html>`); */
 });
+
+app.get("/trivia", async (req , res) => {
+  try{
+    const response = await fetch("https://opentdb.com/api.php?amount=1&type=multiple");
+    if(!response.ok){
+      return res.status(500).send(`Open Trivia Database failed with HTTP code ${response.status}`);
+    }
+    const {response_code,results} = await response.json();
+
+    if(response_code !== 0){
+      return res.status(500).send(`Open Trivia Database failed with internal response code ${response_code}`)
+    }
+
+    res.render("trivia", {
+      ...results[0],
+      answers: shuffleArray([...results[0].incorrect_answers, results[0].correct_answer ].map(answer => (
+    `<a href="javascript:alert('${answer === results[0].correct_answer ? 'Correct!' : 'Incorrect, Please Try Again!'
+    }')">${answer}</a>`)
+    ))
+
+    });
+
+  }catch(err){
+    console.log({
+      err
+    })
+    res.json({
+      error: err
+    })
+  }
+})
 
 // Start listening for network connections
 app.listen(port);
